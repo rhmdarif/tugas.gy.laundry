@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Order;
+use Illuminate\Http\Request;
+
+class SearchTransactionController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+        return view('searchtrx.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+        $data = Order::where('order_id', 'like', $request->key.'%')
+             ->orWhere('user_id', 'like', $request->key.'%')
+             ->orWhere('package', '=', $request->key)
+             ->orWhere('status', '=', $request->key)
+             ->orWhere('payment', '=', $request->key);
+
+        return view('searchtrx.show', ['transaksi' => $data->paginate(10)->onEachSide(3)]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function searchSingle(Request $request)
+    {
+        //
+        $data = Order::where('order_id', $request->key)->get()->first();
+
+        if($data == null) {
+            return back()->with(['status' => 'error', 'msg' => "Transaksi tidak ditemui"]);
+        }
+
+        return view('searchtrx.show-guest', ['transaksi' => $data->toArray()]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Order $order)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Order $order)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Order $order)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Order  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Order $order)
+    {
+        //
+    }
+}
